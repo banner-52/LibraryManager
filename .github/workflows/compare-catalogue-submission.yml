@@ -1,0 +1,92 @@
+name: Compare catalogue submission
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  compare:
+    if: startsWith(github.event.issue.title, '[Profile submission]') || startsWith(github.event.issue.title, '[Catalogue change]') || startsWith(github.event.issue.title, 'Catalogue profile:')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out catalogue
+        uses: actions/checkout@v4
+
+      - name: Compare proposal with published catalogue
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re
+          from pathlib import Path
+
+          body = os.environ.get("ISSUE_BODY", "")
+
+          def metadata(name):
+              match = re.search(r"<!--\s*" + re.escape(name) + r"\s*:\s*([^>]+?)\s*-->", body, re.I)
+              return match.group(1).strip() if match else ""
+
+          def normalize(value):
+              if isinstance(value, list):
+                  return [normalize(item) for item in value]
+              if isinstance(value, dict):
+                  return {key[:1].lower() + key[1:]: normalize(item) for key, item in value.items()}
+              return value
+
+          def software_key(profile):
+              config = profile.get("configuration", {})
+              return str(profile.get("softwareId") or config.get("folder", "")).strip().casefold()
+
+          target_id = metadata("target-profile-id")
+          fence = chr(96) * 3
+          match = re.search(fence + r"json\s*(\{.*?\})\s*" + fence, body, re.DOTALL)
+          profile = normalize(json.loads(match.group(1))) if match else None
+          if not target_id and isinstance(profile, dict):
+              target_id = str(profile.get("id", "")).strip()
+
+          catalogue = normalize(json.loads(Path("OnlineCatalog/catalog.json").read_text(encoding="utf-8")))
+          profiles = catalogue.get("profiles", [])
+          existing = next((item for item in profiles if item.get("id", "").casefold() == target_id.casefold()), None) if target_id else None
+          alternatives = []
+          if isinstance(profile, dict):
+              proposed_key = software_key(profile)
+              if proposed_key:
+                  alternatives = [item for item in profiles if software_key(item) == proposed_key and item.get("id", "").casefold() != target_id.casefold()]
+
+          lines = ["## Catalogue comparison", ""]
+          if not isinstance(profile, dict):
+              lines += ["No readable JSON profile was found in this issue.", "", "Paste a complete profile JSON block before approval."]
+          elif existing is not None:
+              lines += [f"Profile ID already exists: {target_id}.", ""]
+              old = existing.get("configuration", {})
+              new = profile.get("configuration", {})
+              fields = ("source", "sourceUrl", "winGetPackageId", "downloadMethod", "downloadSourceUrl", "assetPattern", "versionPattern")
+              changed = [field for field in fields if old.get(field, "") != new.get(field, "")]
+              lines += ["Changed fields: " + (", ".join(changed) if changed else "none detected."), "", "Use approved-replace only if this proposal should replace that exact profile."]
+          elif alternatives:
+              ids = ", ".join(item.get("id", "(missing id)") for item in alternatives)
+              methods = ", ".join(
+                  f"{item.get('configuration', {}).get('source', '?')} → {item.get('configuration', {}).get('downloadMethod', '?')}"
+                  for item in alternatives
+              )
+              lines += [
+                  f"New profile ID: {target_id}.",
+                  "A configuration already exists for the same software.",
+                  "Existing profile IDs: " + ids + ".",
+                  "Existing methods: " + methods + ".",
+                  "",
+                  "This proposal is an additional method. Use approved-add to keep both methods, or approved-replace only to update one existing profile."
+              ]
+          else:
+              lines += [f"New profile ID: {target_id or '(missing)'}.", "No existing configuration was found for this software.", "", "Use approved-add after reviewing the official source."]
+
+          lines += ["", "Approval labels:", "", "- approved-add: add a new profile or an additional method.", "- approved-replace: replace the profile identified by target-profile-id.", "- approved-remove: remove the profile identified by target-profile-id.", "", "Adding one of these labels commits the change and closes this issue."]
+          Path("comparison.md").write_text("\n".join(lines), encoding="utf-8")
+          PY
+          gh issue comment "$ISSUE_NUMBER" --body-file comparison.md
