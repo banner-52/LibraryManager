@@ -76,8 +76,7 @@ catalogue["updatedUtc"] = datetime.now(timezone.utc).replace(microsecond=0).isof
 path.write_text(json.dumps(catalogue, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 Path("catalogue-result.txt").write_text(result, encoding="utf-8")
 if profile is not None:
-    Path("catalogue-news.env").write_text(
-        f"NEWS_SOFTWARE_ID={profile.get('id', target_id)}\n"
-        f"NEWS_SOFTWARE_NAME={profile.get('name', target_id)}\n",
+    Path("catalogue-news.json").write_text(
+        json.dumps({"softwareId": profile.get("id", target_id), "softwareName": profile.get("name", target_id)}),
         encoding="utf-8",
     )
