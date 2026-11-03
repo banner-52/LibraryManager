@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "updatedUtc": "2026-11-03T22:00:58Z",
+  "sections": {
+    "catalogue": [
+      {
+        "id": "catalogue-50",
+        "date": "2026-11-03T22:00:58Z",
+        "title": "thunderbird added to the Online Catalogue",
+        "description": "thunderbird is now available in the Online Catalogue.",
+        "softwareId": "0f5828ca-f1b0-4eb3-9310-49660562ffd2"
+      },
+      {
+        "id": "catalogue-46",
+        "date": "2026-09-30T15:42:22Z",
+        "title": "Xmind added to the Online Catalogue",
+        "description": "Xmind is now available in the Online Catalogue.",
+        "softwareId": "434b5a5f-15c2-4f39-a613-82d1b0786d4f"
+      },
+      {
+        "id": "catalogue-45",
+        "date": "2026-09-27T22:00:19Z",
+        "title": "Discord added to the Online Catalogue",
+        "description": "Discord is now available in the Online Catalogue.",
+        "softwareId": "d2e4cc50-fbb1-4d13-b19e-1071d98b582b"
+      },
+      {
+        "id": "catalogue-36",
+        "date": "2026-09-25T19:39:34Z",
+        "title": "PrusaSlicer added to the Online Catalogue",
+        "description": "PrusaSlicer is now available in the Online Catalogue.",
+        "softwareId": "5ca32787-b5c0-481f-a2f1-e05471b9fcac"
+      },
+      {
+        "id": "catalogue-37",
+        "date": "2026-09-25T19:38:46Z",
+        "title": "Python added to the Online Catalogue",
+        "description": "Python is now available in the Online Catalogue.",
+        "softwareId": "d63ae157-e037-422f-a3fb-04e8c68bde66"
+      },
+      {
+        "id": "catalogue-40",
+        "date": "2026-09-25T19:38:29Z",
+        "title": "Preform added to the Online Catalogue",
+        "description": "Preform is now available in the Online Catalogue.",
+        "softwareId": "75cb719a-e6cc-4c8d-b5c2-aabeb9d476a0"
+      },
+      {
+        "id": "catalogue-41",
+        "date": "2026-09-25T19:33:30Z",
+        "title": "Preform added to the Online Catalogue",
+        "description": "Preform is now available in the Online Catalogue.",
+        "softwareId": "95bff92c-55c9-49fc-9177-218185f4a6a5"
+      },
+      {
+        "id": "catalogue-34",
+        "date": "2026-09-25T13:58:27Z",
+        "title": "Ideamaker added to the Online Catalogue",
+        "description": "Ideamaker is now available in the Online Catalogue.",
+        "softwareId": "0bb7778f-9bcb-4448-a904-a030c416aa22"
+      },
+      {
+        "id": "catalogue-33",
+        "date": "2026-09-25T13:50:07Z",
+        "title": "Greenshot added to the Online Catalogue",
+        "description": "Greenshot is now available in the Online Catalogue.",
+        "softwareId": "4876dad6-15a7-49d4-af6d-2ee007f277eb"
+      },
+      {
+        "id": "catalogue-32",
+        "date": "2026-09-25T13:06:13Z",
+        "title": "New software added to the Online Catalogue",
+        "description": "A new approved software profile is now available in the Online Catalogue."
+      }
+    ],
+    "features": [
+      {
+        "id": "feature-52",
+        "date": "2026-11-03T21:58:43Z",
+        "title": "Added feature / Notification of available update",
+        "description": "* Additional Feature / background update notifications \nYou now can enable and define an automatic task to check and notify for available software update.\n* how to use\nEnable the background update notification in settings /  Startup & diagnostics section.\nDefine the desired delay you want to automatically be notified.\nActivate notification for each software in your app list (bell icon)"
+      },
+      {
+        "id": "feature-47",
+        "date": "2026-10-01T12:04:18Z",
+        "title": "1.0.111 / First run wizard",
+        "description": "The last update now contain a First run wizard for new users."
+      },
+      {
+        "id": "feature-43",
+        "date": "2026-09-26T21:21:56Z",
+        "title": "1.0.79 / Comparison & preview",
+        "description": "Version 1.0.79\nAdded new buttons to the Online Catalogue.\nCompare\nHighlights the differences between the online and local profiles. You can replace the local configuration with the online profile if desired.\nSee Profile\nShows a preview of the selected online profile's configuration."
+      }
+    ],
+    "fixes": [
+      {
+        "id": "incident-44",
+        "date": "2026-09-26T21:40:57Z",
+        "title": "Version 1.0.80 — Update progress now completes correctly for up-to-date software",
+        "description": "Fixed an issue where the update progress window could remain on **Step 1/6 — Checking update source** when trying to update software that was already up to date.\n\nThe progress now clearly reports that the software is already up to date and completes at 100%."
+      }
+    ]
+  }
+}
