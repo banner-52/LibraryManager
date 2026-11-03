@@ -1,0 +1,62 @@
+name: Apply approved catalogue change
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: github.event.label.name == 'approved-add' || github.event.label.name == 'approved-replace' || github.event.label.name == 'approved-remove'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out catalogue
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply, commit, and publish catalogue change
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          APPROVAL_LABEL: ${{ github.event.label.name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "Library Manager catalogue bot"
+          git config user.email "actions@github.com"
+
+          # Multiple approval events may arrive together. On a push race, restart the
+          # transaction from the latest main branch and apply this issue again.
+          for attempt in 1 2 3 4 5 6 7 8; do
+            git fetch origin main
+            git checkout --force -B main origin/main
+            python3 .github/scripts/apply_catalogue_change.py
+            if [ "$APPROVAL_LABEL" = "approved-add" ]; then
+              source catalogue-news.env
+              export NEWS_SECTION="catalogue"
+              export NEWS_ID="catalogue-${ISSUE_NUMBER}"
+              export NEWS_TITLE="${NEWS_SOFTWARE_NAME} added to the Online Catalogue"
+              export NEWS_DESCRIPTION="${NEWS_SOFTWARE_NAME} is now available in the Online Catalogue."
+              export NEWS_SOFTWARE_ID
+              python3 .github/scripts/update_news.py
+            fi
+            git add OnlineCatalog/catalog.json OnlineCatalog/news.json
+            git commit -m "Apply catalogue change #${{ github.event.issue.number }}"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Another approved change was published first; retrying this change (attempt $attempt/8)."
+            sleep $((attempt * 2))
+          done
+
+          echo "Could not publish this catalogue change after eight attempts."
+          exit 1
+
+      - name: Close processed submission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          result="$(cat catalogue-result.txt)"
+          gh issue close ${{ github.event.issue.number }} --comment "$result Published to the online catalogue."
