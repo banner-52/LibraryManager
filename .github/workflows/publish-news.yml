@@ -1,0 +1,63 @@
+name: Publish labelled news
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: news-publishing
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: contains(github.event.issue.labels.*.name, 'news-feature') || contains(github.event.issue.labels.*.name, 'news-fixed')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Publish issue news
+        shell: bash
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
+        run: |
+          set -euo pipefail
+          git config user.name "Library Manager news bot"
+          git config user.email "actions@github.com"
+
+          if [[ ",$LABELS," == *",news-feature,"* ]]; then
+            export NEWS_SECTION="features"
+            export NEWS_ID="feature-$ISSUE_NUMBER"
+          else
+            export NEWS_SECTION="fixes"
+            export NEWS_ID="incident-$ISSUE_NUMBER"
+          fi
+          export NEWS_TITLE="$ISSUE_TITLE"
+          export NEWS_DESCRIPTION="${ISSUE_BODY:0:500}"
+
+          for attempt in 1 2 3 4 5 6 7 8; do
+            git fetch origin main
+            git checkout --force -B main origin/main
+            python3 .github/scripts/update_news.py
+            git add OnlineCatalog/news.json
+            if git diff --cached --quiet; then
+              echo "News already published; nothing to commit."
+              exit 0
+            fi
+            git commit -m "Publish news from issue #$ISSUE_NUMBER"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+          echo "Failed to publish news after eight attempts."
+          exit 1
