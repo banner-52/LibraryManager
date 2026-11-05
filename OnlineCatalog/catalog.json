@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedUtc": "2026-11-03T22:00:58Z",
+  "updatedUtc": "2026-11-05T22:27:45Z",
   "profiles": [
     {
       "id": "18983655-80e7-432e-8f1d-2d4f576f32ea",
@@ -330,6 +330,42 @@
         "preserveInstallerName": false,
         "silentInstallCommand": "Everything-w.x.y.z.x86-Setup.exe /S",
         "silentUninstallCommand": "\"%ProgramFiles%\\Everything\\Uninstall.exe\" /S",
+        "additionalFiles": []
+      }
+    },
+    {
+      "id": "81079a8e-4905-4c18-9b68-32c5471dca9b",
+      "softwareId": null,
+      "name": "Fileopen",
+      "description": "",
+      "publisher": "",
+      "favorite": false,
+      "updateNotificationEnabled": false,
+      "configuration": {
+        "folder": "Fileopen",
+        "iconUrl": "https://plugin.fileopen.com/favicon-32x32.png",
+        "initialVersion": "",
+        "source": "Website",
+        "sourceUrl": "https://plugin.fileopen.com/",
+        "winGetPackageId": "",
+        "downloadMethod": "SameAsCheck",
+        "downloadSourceUrl": "",
+        "downloadAssetPattern": "(?<url>https://plugin\\.fileopen\\.com/current/FileOpenInstaller\\.exe)",
+        "downloadVersionPattern": "",
+        "deliveryUrlTemplate": "",
+        "deliveryFileNameTemplate": "",
+        "deliveryStableSourceConfirmed": false,
+        "downloadWinGetPackageId": "",
+        "assetPattern": "(?<url>https://plugin\\.fileopen\\.com/current/FileOpenInstaller\\.exe)",
+        "versionPattern": "(?:(?:(?i:\\bversion)\\s+[vV]?)(?<version>[0-9]+(?:[._-][0-9]+){1,7})(?![0-9._-])|(?:(?i:\\b(?:windows\\s+)?installers?)\\s*[\\[(]\\s*)(?<version>[0-9]{3,6})(?![0-9])\\s*[\\])])",
+        "downloadUrlTemplate": "",
+        "downloadFileNameTemplate": "",
+        "expectedSha256": "",
+        "stableSourceConfirmed": false,
+        "installerEntry": "",
+        "preserveInstallerName": false,
+        "silentInstallCommand": "",
+        "silentUninstallCommand": "",
         "additionalFiles": []
       }
     },

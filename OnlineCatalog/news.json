@@ -1,8 +1,15 @@
 {
   "schemaVersion": 1,
-  "updatedUtc": "2026-11-03T22:00:58Z",
+  "updatedUtc": "2026-11-05T22:27:45Z",
   "sections": {
     "catalogue": [
+      {
+        "id": "catalogue-1",
+        "date": "2026-11-05T22:27:45Z",
+        "title": "Fileopen added to the Online Catalogue",
+        "description": "Fileopen is now available in the Online Catalogue.",
+        "softwareId": "81079a8e-4905-4c18-9b68-32c5471dca9b"
+      },
       {
         "id": "catalogue-50",
         "date": "2026-11-03T22:00:58Z",
