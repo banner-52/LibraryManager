@@ -1,3 +1,4 @@
+
 name: Apply approved catalogue change
 
 on:
@@ -10,8 +11,12 @@ permissions:
 
 jobs:
   publish:
-    if: github.event.label.name == 'approved-add' || github.event.label.name == 'approved-replace' || github.event.label.name == 'approved-remove'
+    if: >-
+      github.event.label.name == 'approved-add' ||
+      github.event.label.name == 'approved-replace' ||
+      github.event.label.name == 'approved-remove'
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out catalogue
         uses: actions/checkout@v4
@@ -19,42 +24,75 @@ jobs:
           fetch-depth: 0
 
       - name: Apply, commit, and publish catalogue change
+        shell: bash
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           APPROVAL_LABEL: ${{ github.event.label.name }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
+          set -euo pipefail
+
           git config user.name "Library Manager catalogue bot"
           git config user.email "actions@github.com"
 
-          # Multiple approval events may arrive together. On a push race, restart the
-          # transaction from the latest main branch and apply this issue again.
+          # Retry when another workflow updates main concurrently.
           for attempt in 1 2 3 4 5 6 7 8; do
+            echo "Publishing catalogue change (attempt $attempt/8)"
+
             git fetch origin main
             git checkout --force -B main origin/main
+
+            # Apply the approved catalogue change.
             python3 .github/scripts/apply_catalogue_change.py
+
+            # Generate a news entry for newly added software.
             if [ "$APPROVAL_LABEL" = "approved-add" ]; then
-              python3 -c '
-              import json
-              import os
-              import runpy
-              from pathlib import Path
-              
-              metadata = json.loads(Path("catalogue-news.json").read_text(encoding="utf-8"))
-              os.environ["NEWS_SECTION"] = "catalogue"
-              os.environ["NEWS_ID"] = "catalogue-" + os.environ["ISSUE_NUMBER"]
-              os.environ["NEWS_TITLE"] = metadata["softwareName"] + " added to the Online Catalogue"
-              os.environ["NEWS_DESCRIPTION"] = metadata["softwareName"] + " is now available in the Online Catalogue."
-              os.environ["NEWS_SOFTWARE_ID"] = metadata["softwareId"]
-              runpy.run_path(".github/scripts/update_news.py", run_name="__main__")
-              '
+              python3 - <<'PY'
+          import json
+          import os
+          import runpy
+          from pathlib import Path
+
+          metadata = json.loads(
+              Path("catalogue-news.json").read_text(encoding="utf-8")
+          )
+
+          os.environ["NEWS_SECTION"] = "catalogue"
+          os.environ["NEWS_ID"] = "catalogue-" + os.environ["ISSUE_NUMBER"]
+          os.environ["NEWS_TITLE"] = (
+              metadata["softwareName"] + " added to the Online Catalogue"
+          )
+          os.environ["NEWS_DESCRIPTION"] = (
+              metadata["softwareName"] +
+              " is now available in the Online Catalogue."
+          )
+          os.environ["NEWS_SOFTWARE_ID"] = metadata["softwareId"]
+
+          runpy.run_path(
+              ".github/scripts/update_news.py",
+              run_name="__main__"
+          )
+          PY
             fi
+
+            # Stage only the expected catalogue and news files.
             git add OnlineCatalog/catalog.json OnlineCatalog/news.json
-            git commit -m "Apply catalogue change #${{ github.event.issue.number }}"
-            if git push origin HEAD:main; then
+
+            # Avoid failing when there are no changes to commit.
+            if git diff --cached --quiet; then
+              echo "No catalogue changes to commit."
               exit 0
             fi
-            echo "Another approved change was published first; retrying this change (attempt $attempt/8)."
+
+            git commit -m "Apply catalogue change #${ISSUE_NUMBER}"
+
+            if git push origin HEAD:main; then
+              echo "Catalogue successfully published."
+              exit 0
+            fi
+
+            echo "Another approved change was published first."
+            echo "Retrying after delay (attempt $attempt/8)."
             sleep $((attempt * 2))
           done
 
@@ -62,8 +100,14 @@ jobs:
           exit 1
 
       - name: Close processed submission
+        if: success()
         env:
           GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
         run: |
+          set -euo pipefail
+
           result="$(cat catalogue-result.txt)"
-          gh issue close ${{ github.event.issue.number }} --comment "$result Published to the online catalogue."
+          gh issue close "$ISSUE_NUMBER" \
+            --comment "$result Published to the online catalogue."
