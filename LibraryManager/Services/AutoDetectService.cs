@@ -61,26 +61,49 @@ public sealed class AutoDetectService
 
         if (github is null)
         {
-            progress?.Report("Looking for a linked GitHub repository...");
-            github = pages.SelectMany(page => ExtractLinks(page.Html, page.Uri))
+            progress?.Report("Looking for linked GitHub repositories...");
+            var repositories = pages
+                .SelectMany(page => ExtractLinks(page.Html, page.Uri))
                 .Select(TryGetGitHubRepository)
-                .FirstOrDefault(repository => repository is not null);
-            if (github is not null)
+                .Where(repository => repository is not null)
+                .Select(repository => repository!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Select(repository => new
+                {
+                    Url = repository,
+                    Score = ScoreGitHubRepository(repository, softwareName)
+                })
+                .Where(candidate => candidate.Score > 0)
+                .OrderByDescending(candidate => candidate.Score)
+                .Take(8)
+                .ToList();
+
+            foreach (var candidate in repositories)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                progress?.Report($"Checking GitHub releases: {candidate.Url}...");
                 try
                 {
-                    var release = await new GitHubDetection(AppServices.GitHubAuthentication, AppServices.Requests).GetLatestReleaseAsync(github, cancellationToken);
+                    var release = await new GitHubDetection(AppServices.GitHubAuthentication, AppServices.Requests)
+                        .GetLatestReleaseAsync(candidate.Url, cancellationToken);
                     foreach (var asset in RankGitHubAssets(release.Assets, softwareName).Take(60))
                     {
                         results.Add(new AutoDetectResult
                         {
-                            Method = SoftwareSourceKind.GitHubReleases, SourceUrl = github, Version = release.Version,
-                            DownloadUrl = asset.DownloadUrl, DownloadPattern = null,
-                            Confidence = 95, Summary = "A linked GitHub repository was detected and its latest Windows release asset was selected."
+                            Method = SoftwareSourceKind.GitHubReleases,
+                            SourceUrl = candidate.Url,
+                            Version = release.Version,
+                            DownloadUrl = asset.DownloadUrl,
+                            Confidence = Math.Clamp(70 + candidate.Score, 0, 95),
+                            Summary = "A matching GitHub repository was discovered from the website."
                         });
                     }
                 }
-                catch { /* Continue with other generic discovery methods. */ }
+                catch (OperationCanceledException) { throw; }
+                catch (Exception ex)
+                {
+                    progress?.Report($"GitHub repository {candidate.Url} unavailable: {ex.Message}");
+                }
             }
         }
 
@@ -310,6 +333,21 @@ public sealed class AutoDetectService
         if (!uri.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase)) return null;
         var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
         return segments.Length >= 2 ? $"https://github.com/{segments[0]}/{segments[1]}" : null;
+    }
+
+    private static int ScoreGitHubRepository(string repository, string softwareName)
+    {
+        var segments = new Uri(repository).AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length < 2) return 0;
+        var name = NormalizeIdentity(softwareName);
+        if (name.Length == 0) return 0;
+        var owner = NormalizeIdentity(segments[0]);
+        var project = NormalizeIdentity(segments[1]);
+        if (project == name) return 30;
+        if (owner == name) return 20;
+        if (project.Contains(name, StringComparison.OrdinalIgnoreCase) ||
+            name.Contains(project, StringComparison.OrdinalIgnoreCase)) return 12;
+        return 0;
     }
 
     private static IEnumerable<GitHubReleaseAsset> RankGitHubAssets(IEnumerable<GitHubReleaseAsset> assets, string name) =>
