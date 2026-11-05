@@ -34,12 +34,12 @@ jobs:
             git checkout --force -B main origin/main
             python3 .github/scripts/apply_catalogue_change.py
             if [ "$APPROVAL_LABEL" = "approved-add" ]; then
-              python3 - <<'PY'
+              python3 -c '
               import json
               import os
               import runpy
               from pathlib import Path
-
+              
               metadata = json.loads(Path("catalogue-news.json").read_text(encoding="utf-8"))
               os.environ["NEWS_SECTION"] = "catalogue"
               os.environ["NEWS_ID"] = "catalogue-" + os.environ["ISSUE_NUMBER"]
@@ -47,7 +47,7 @@ jobs:
               os.environ["NEWS_DESCRIPTION"] = metadata["softwareName"] + " is now available in the Online Catalogue."
               os.environ["NEWS_SOFTWARE_ID"] = metadata["softwareId"]
               runpy.run_path(".github/scripts/update_news.py", run_name="__main__")
-              PY
+              '
             fi
             git add OnlineCatalog/catalog.json OnlineCatalog/news.json
             git commit -m "Apply catalogue change #${{ github.event.issue.number }}"
