@@ -1,0 +1,40 @@
+<UserControl x:Class="LibraryManager.Views.Controls.SoftwareList"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{DynamicResource StandardPanelStyle}">
+        <DataGrid ItemsSource="{Binding SoftwareItems}" AutoGenerateColumns="False" CanUserAddRows="False"
+                  CanUserDeleteRows="False" IsReadOnly="True" GridLinesVisibility="Horizontal" HeadersVisibility="Column" MouseLeftButtonDown="DataGrid_MouseLeftButtonDown">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="42">
+                    <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                        <CheckBox IsChecked="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                  Focusable="False"/>
+                    </DataTemplate></DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="" Width="48"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                    <Grid><Image Source="{Binding Icon}" ImageFailed="SoftwareIcon_ImageFailed" Width="24" Height="24"/><Ellipse Style="{DynamicResource StatusIndicatorStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/></Grid>
+                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="★" Width="42"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                    <Button ToolTip="Toggle favorite" Tag="{Binding}" Click="FavoriteButton_Click" Style="{DynamicResource StandardButtonStyle}" Width="32" Height="28" Padding="0">
+                        <TextBlock Text="★"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource SecondaryTextBrush}"/><Style.Triggers><DataTrigger Binding="{Binding IsFavorite}" Value="True"><Setter Property="Foreground" Value="#FFFFC107"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+                    </Button>
+                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="🔔" Width="42"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                    <Button ToolTip="Toggle update notifications" Tag="{Binding}" Click="NotificationButton_Click" Style="{DynamicResource StandardButtonStyle}" Width="32" Height="28" Padding="0">
+                        <TextBlock Text="🔔"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Opacity" Value="0.35"/><Style.Triggers><DataTrigger Binding="{Binding IsUpdateNotificationEnabled}" Value="True"><Setter Property="Opacity" Value="1"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+                    </Button>
+                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                <DataGridTextColumn Header="Software" Binding="{Binding DisplayName, Mode=OneWay}" Width="*"/>
+                <DataGridTextColumn Header="Stored version" Binding="{Binding Local, Mode=OneWay}" Width="Auto"/>
+                <DataGridTextColumn Header="Available" Binding="{Binding Latest, Mode=OneWay}" Width="Auto"/>
+                <DataGridTextColumn Header="Method" Binding="{Binding Source, Mode=OneWay}" Width="Auto"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status, Mode=OneWay}" Width="Auto"/>
+                <DataGridTemplateColumn Header="Actions" Width="168"><DataGridTemplateColumn.CellTemplate><DataTemplate>
+                    <StackPanel Orientation="Horizontal"><Button Content="↓" ToolTip="Update" Tag="{Binding}" Click="UpdateButton_Click" Style="{DynamicResource StandardButtonStyle}" Width="42" Padding="0"/><Button Content="⚙" ToolTip="Configure profile" Tag="{Binding}" Click="ConfigureButton_Click" Style="{DynamicResource StandardButtonStyle}" Width="42" Padding="0" Margin="6,0,0,0"/><Button Content="•••" ToolTip="More actions" Tag="{Binding}" Click="MoreButton_Click" Style="{DynamicResource StandardButtonStyle}" Width="42" Padding="0" Margin="6,0,0,0"/></StackPanel>
+                </DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Border>
+</UserControl>

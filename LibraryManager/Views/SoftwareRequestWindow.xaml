@@ -1,0 +1,33 @@
+<Window x:Class="LibraryManager.Views.SoftwareRequestWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Request software" Width="640" Height="700" MinHeight="650"
+ WindowStartupLocation="CenterOwner"
+ Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource PrimaryTextBrush}">
+ <Border Style="{DynamicResource StandardPanelStyle}" Margin="16" Padding="24">
+  <StackPanel>
+   <TextBlock Text="Request software" Style="{DynamicResource PageTitleStyle}"/>
+   <TextBlock Text="Request a software profile for the Online Catalogue." TextWrapping="Wrap" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,4,0,12"/>
+   <Border Style="{DynamicResource StandardPanelStyle}" Padding="12" Margin="0,0,0,12">
+    <StackPanel>
+     <TextBlock Text="Catalogue requirements" FontWeight="SemiBold" Margin="0,0,0,5"/>
+     <TextBlock Text="• The software must be free to download." TextWrapping="Wrap"/>
+     <TextBlock Text="• The installer and update source must be publicly accessible from the Internet." TextWrapping="Wrap"/>
+     <TextBlock Text="• Downloads requiring a login, customer portal, company portal, subscription, licence portal or other authenticated access are not accepted." TextWrapping="Wrap"/>
+     <TextBlock Text="• An official vendor download page or other official public source should be provided when possible." TextWrapping="Wrap"/>
+    </StackPanel>
+   </Border>
+   <TextBlock Text="Software name" Style="{DynamicResource FieldLabelStyle}"/>
+   <TextBox x:Name="SoftwareNameTextBox" MaxLength="180" Style="{DynamicResource StandardTextBoxStyle}"/>
+   <TextBlock Text="Official website or download page" Style="{DynamicResource FieldLabelStyle}" Margin="0,10,0,0"/>
+   <TextBox x:Name="SourceUrlTextBox" MaxLength="1000" Style="{DynamicResource StandardTextBoxStyle}"/>
+   <TextBlock Text="Additional information (optional)" Style="{DynamicResource FieldLabelStyle}" Margin="0,10,0,0"/>
+   <TextBox x:Name="DetailsTextBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MinHeight="90" MaxLength="4000" Style="{DynamicResource StandardTextBoxStyle}"/>
+   <TextBlock x:Name="ErrorTextBlock" Foreground="IndianRed" TextWrapping="Wrap" Margin="0,8,0,0"/>
+   <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+    <Button Content="Submit request" MinWidth="140" IsDefault="True" Click="SubmitButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+    <Button Content="Cancel" MinWidth="100" IsCancel="True" Style="{DynamicResource StandardButtonStyle}"/>
+   </StackPanel>
+  </StackPanel>
+ </Border>
+</Window>

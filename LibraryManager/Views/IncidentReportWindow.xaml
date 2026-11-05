@@ -1,0 +1,22 @@
+<Window x:Class="LibraryManager.Views.IncidentReportWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Report incident" Width="620" Height="470" MinHeight="380"
+ WindowStartupLocation="CenterOwner"
+ Background="{DynamicResource WindowBackgroundBrush}" Foreground="{DynamicResource PrimaryTextBrush}">
+ <Border Style="{DynamicResource StandardPanelStyle}" Margin="16" Padding="24">
+  <StackPanel>
+   <TextBlock Text="Report incident" Style="{DynamicResource PageTitleStyle}"/>
+   <TextBlock Text="A GitHub issue will be created in the Library Manager repository." TextWrapping="Wrap" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,4,0,12"/>
+   <TextBlock Text="Short summary" Style="{DynamicResource FieldLabelStyle}"/>
+   <TextBox x:Name="SummaryTextBox" MaxLength="180" Style="{DynamicResource StandardTextBoxStyle}"/>
+   <TextBlock Text="What happened? (optional)" Style="{DynamicResource FieldLabelStyle}" Margin="0,10,0,0"/>
+   <TextBox x:Name="DetailsTextBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MinHeight="120" MaxLength="6000" Style="{DynamicResource StandardTextBoxStyle}"/>
+   <TextBlock x:Name="ErrorTextBlock" Foreground="IndianRed" TextWrapping="Wrap" Margin="0,8,0,0"/>
+   <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+    <Button Content="Report incident" MinWidth="140" IsDefault="True" Click="ReportButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+    <Button Content="Cancel" MinWidth="100" IsCancel="True" Style="{DynamicResource StandardButtonStyle}"/>
+   </StackPanel>
+  </StackPanel>
+ </Border>
+</Window>

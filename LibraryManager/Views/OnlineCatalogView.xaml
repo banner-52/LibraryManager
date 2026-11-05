@@ -1,0 +1,41 @@
+<UserControl x:Class="LibraryManager.Views.OnlineCatalogView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Grid>
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <TextBlock Text="Online Catalogue" Style="{DynamicResource SurfaceTitleStyle}"/>
+  <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <TextBox x:Name="SearchTextBox" Style="{DynamicResource StandardTextBoxStyle}" TextChanged="SearchTextBox_TextChanged"/>
+   <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
+    <Button x:Name="RequestSoftwareButton" Content="Request software" Click="RequestSoftwareButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/>
+    <Button Content="Refresh" Click="RefreshButton_Click" Style="{DynamicResource StandardButtonStyle}"/>
+   </StackPanel>
+  </Grid>
+  <TextBlock x:Name="StatusTextBlock" Grid.Row="2" Margin="0,8,0,0" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap"/>
+  <Border Grid.Row="3" Style="{DynamicResource StandardPanelStyle}" Margin="0,10">
+   <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ItemsControl x:Name="CatalogueItems">
+     <ItemsControl.ItemTemplate><DataTemplate>
+      <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="8,7">
+       <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition Width="220"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <Image Source="{Binding Icon}" ImageFailed="SoftwareIcon_ImageFailed" Width="28" Height="28" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,20,0"/>
+        <ItemsControl Grid.Column="2" ItemsSource="{Binding Options}" VerticalAlignment="Center">
+         <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Rows="1" Columns="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+         <ItemsControl.ItemTemplate><DataTemplate>
+          <CheckBox IsChecked="{Binding IsSelected}" Margin="0,0,20,0" VerticalAlignment="Center" ToolTip="{Binding Details}">
+           <TextBlock Text="{Binding Label}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+          </CheckBox>
+         </DataTemplate></ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Button Grid.Column="3" Content="{Binding ActionLabel}" Click="CompareButton_Click" Tag="{Binding}" Style="{DynamicResource StandardButtonStyle}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+       </Grid>
+      </Border>
+     </DataTemplate></ItemsControl.ItemTemplate>
+    </ItemsControl>
+   </ScrollViewer>
+  </Border>
+  <Button Grid.Row="4" Content="Add selected profiles" Click="AddButton_Click" Style="{DynamicResource PrimaryButtonStyle}" HorizontalAlignment="Right" MinWidth="150"/>
+ </Grid>
+</UserControl>

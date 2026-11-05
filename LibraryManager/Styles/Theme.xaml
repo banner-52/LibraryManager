@@ -1,0 +1,41 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Base colors. Settings will replace these resources at runtime. -->
+    <Color x:Key="WindowBackgroundColor">#FFF5F6F8</Color>
+    <Color x:Key="HeaderBackgroundColor">#FF1F2A44</Color>
+    <Color x:Key="HeaderControlBackgroundColor">#FF2A3650</Color>
+    <Color x:Key="PanelBackgroundColor">#F2FFFFFF</Color>
+    <Color x:Key="CardBackgroundColor">#FFFFFFFF</Color>
+    <Color x:Key="AlternateCardBackgroundColor">#FFF8FAFC</Color>
+    <Color x:Key="WindowTextColor">#FF1F2937</Color>
+    <Color x:Key="PrimaryTextColor">#FF1F2937</Color>
+    <Color x:Key="SecondaryTextColor">#FF6B7280</Color>
+    <Color x:Key="HeaderTextColor">#FFFFFFFF</Color>
+    <Color x:Key="HeaderSecondaryTextColor">#FFB8C1D1</Color>
+    <Color x:Key="BorderColor">#FFD8DCE3</Color>
+    <Color x:Key="AccentColor">#FF3B82F6</Color>
+    <Color x:Key="SuccessColor">#FF22C55E</Color>
+    <Color x:Key="WarningColor">#FFF59E0B</Color>
+    <Color x:Key="ErrorColor">#FFEF4444</Color>
+    <Color x:Key="NeutralColor">#FF9CA3AF</Color>
+    <Color x:Key="SelectionColor">#FF3B82F6</Color>
+
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{DynamicResource WindowBackgroundColor}"/>
+    <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="{DynamicResource HeaderBackgroundColor}"/>
+    <SolidColorBrush x:Key="HeaderControlBackgroundBrush" Color="{DynamicResource HeaderControlBackgroundColor}"/>
+    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="{DynamicResource PanelBackgroundColor}"/>
+    <SolidColorBrush x:Key="CardBackgroundBrush" Color="{DynamicResource CardBackgroundColor}"/>
+    <SolidColorBrush x:Key="AlternateCardBackgroundBrush" Color="{DynamicResource AlternateCardBackgroundColor}"/>
+    <SolidColorBrush x:Key="WindowTextBrush" Color="{DynamicResource WindowTextColor}"/>
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{DynamicResource PrimaryTextColor}"/>
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{DynamicResource SecondaryTextColor}"/>
+    <SolidColorBrush x:Key="HeaderTextBrush" Color="{DynamicResource HeaderTextColor}"/>
+    <SolidColorBrush x:Key="HeaderSecondaryTextBrush" Color="{DynamicResource HeaderSecondaryTextColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource BorderColor}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{DynamicResource SuccessColor}"/>
+    <SolidColorBrush x:Key="WarningBrush" Color="{DynamicResource WarningColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{DynamicResource ErrorColor}"/>
+    <SolidColorBrush x:Key="NeutralBrush" Color="{DynamicResource NeutralColor}"/>
+    <SolidColorBrush x:Key="SelectionBrush" Color="{DynamicResource SelectionColor}"/>
+</ResourceDictionary>

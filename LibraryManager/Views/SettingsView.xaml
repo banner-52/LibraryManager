@@ -1,0 +1,135 @@
+<UserControl x:Class="LibraryManager.Views.SettingsView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Grid Margin="12">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <TextBlock Text="Settings" Style="{DynamicResource PageTitleStyle}"/>
+  <Grid Grid.Row="1" Margin="0,8,0,0">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <StackPanel Grid.Column="0">
+    <Button Content="Source folder" Tag="SourceSection" Click="SettingsSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="Online services" Tag="OnlineSection" Click="SettingsSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="Theme" Tag="ThemeSection" Click="SettingsSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="Startup &amp; diagnostics" Tag="StartupSection" Click="SettingsSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="About" Tag="AboutSection" Click="SettingsSectionButton_Click" Style="{DynamicResource StandardButtonStyle}"/>
+   </StackPanel>
+   <Border Grid.Column="2" Style="{DynamicResource StandardPanelStyle}" Padding="18">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+   <StackPanel x:Name="SourceSection" Visibility="Visible"><StackPanel>
+    <TextBlock Text="Package repository path" Style="{DynamicResource FieldLabelStyle}"/>
+    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="SourceFolderTextBox" Style="{DynamicResource StandardTextBoxStyle}"/><Button Grid.Column="1" Content="Browse..." Click="BrowseSourceButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="8,0,0,0"/></Grid>
+    <TextBlock Text="Changing this path opens another repository. Existing packages are not moved." Style="{DynamicResource HintTextStyle}"/>
+    <TextBlock Text="Local catalogue" Style="{DynamicResource FieldLabelStyle}" Margin="0,12,0,0"/>
+    <TextBlock Text="The local catalogue is stored in %LOCALAPPDATA%\LibraryManager\catalog.json." Style="{DynamicResource HintTextStyle}"/>
+    <WrapPanel Margin="0,6,0,0">
+     <Button Content="Build catalogue" Click="RebuildCatalogueButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+     <Button Content="Import catalogue" Click="ImportCatalogueButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/>
+     <Button Content="Export catalogue" Click="ExportCatalogueButton_Click" Style="{DynamicResource StandardButtonStyle}"/>
+    </WrapPanel>
+   </StackPanel></StackPanel>
+   <StackPanel x:Name="OnlineSection" Visibility="Collapsed"><StackPanel>
+    <TextBlock Text="ONLINE CATALOGUE" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,8"/>
+    <CheckBox x:Name="EnableOnlineCatalogueCheckBox" Content="Enable online catalogue"/>
+    <CheckBox x:Name="UseCustomOnlineCatalogueCheckBox" Content="Use custom online catalogue" Margin="0,10,0,4" Checked="CustomCatalogueCheckBox_Changed" Unchecked="CustomCatalogueCheckBox_Changed"/>
+    <TextBlock Text="Online catalogue URL" Style="{DynamicResource FieldLabelStyle}"/>
+    <TextBox x:Name="OnlineCatalogueUrlTextBox" Style="{DynamicResource StandardTextBoxStyle}"/>
+    <TextBlock Text="Custom catalogues are read-only. Submitting profiles to the official catalogue is disabled." Style="{DynamicResource HintTextStyle}"/>
+    <Separator Margin="0,16,0,14" Background="{DynamicResource BorderBrush}"/>
+    <TextBlock Text="GITHUB" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,8"/>
+    <TextBlock x:Name="GitHubStatusTextBlock" Text="Anonymous access" FontWeight="SemiBold"/>
+    <TextBlock x:Name="GitHubRateLimitTextBlock" Text="Rate limit information is not available yet." Style="{DynamicResource HintTextStyle}"/>
+    <TextBlock Text="GitHub account" Style="{DynamicResource FieldLabelStyle}"/>
+    <TextBlock Text="Sign in through GitHub in your web browser. No client secret is stored in Library Manager." Style="{DynamicResource HintTextStyle}"/>
+    <WrapPanel Margin="0,6,0,8">
+     <Button x:Name="ConnectGitHubOAuthButton" Content="Connect with GitHub" Click="ConnectGitHubOAuthButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+    </WrapPanel>
+    <TextBlock x:Name="GitHubDeviceCodeTextBlock" Visibility="Collapsed" FontWeight="SemiBold" Margin="0,2,0,8"/>
+    <TextBlock Text="Personal Access Token" Style="{DynamicResource FieldLabelStyle}"/>
+    <PasswordBox x:Name="GitHubTokenPasswordBox" Height="34" Padding="10,0" VerticalContentAlignment="Center"
+                 Foreground="{DynamicResource PrimaryTextBrush}" Background="{DynamicResource CardBackgroundBrush}"
+                 BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"/>
+    <TextBlock Text="The token is stored in Windows Credential Manager for the current Windows user. It is never written to settings.json or catalog.json." Style="{DynamicResource HintTextStyle}"/>
+    <WrapPanel Margin="0,6,0,0">
+     <Button x:Name="ConnectGitHubButton" Content="Use token" Click="ConnectGitHubButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="0,0,8,0"/>
+     <Button x:Name="RefreshGitHubButton" Content="Refresh status" Click="RefreshGitHubButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/>
+     <Button x:Name="DisconnectGitHubButton" Content="Disconnect" Click="DisconnectGitHubButton_Click" Style="{DynamicResource StandardButtonStyle}"/>
+    </WrapPanel>
+   </StackPanel></StackPanel>
+   <StackPanel x:Name="ThemeSection" Visibility="Collapsed"><StackPanel>
+    <TextBlock Text="Design" Style="{DynamicResource FieldLabelStyle}"/><ComboBox x:Name="DesignComboBox"><ComboBoxItem Content="Modern"/><ComboBoxItem Content="Classic"/></ComboBox>
+    <TextBlock Text="Theme" Style="{DynamicResource FieldLabelStyle}"/><ComboBox x:Name="ThemeComboBox" SelectionChanged="ThemeComboBox_SelectionChanged"><ComboBoxItem Content="System"/><ComboBoxItem Content="Light"/><ComboBoxItem Content="Dark"/><ComboBoxItem Content="Custom"/></ComboBox>
+    <TextBlock Text="System follows the Windows app theme." Style="{DynamicResource HintTextStyle}"/>
+    <StackPanel x:Name="CustomColoursPanel">
+     <TextBlock Text="Application background colour" Style="{DynamicResource FieldLabelStyle}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="BackgroundColourTextBox" Style="{DynamicResource StandardTextBoxStyle}"/><Button Grid.Column="1" Content="Choose..." Tag="{Binding ElementName=BackgroundColourTextBox}" Click="ChooseColourButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="8,0,0,0"/></Grid>
+     <TextBlock Text="Cards and fields colour" Style="{DynamicResource FieldLabelStyle}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="SurfaceColourTextBox" Style="{DynamicResource StandardTextBoxStyle}"/><Button Grid.Column="1" Content="Choose..." Tag="{Binding ElementName=SurfaceColourTextBox}" Click="ChooseColourButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="8,0,0,0"/></Grid>
+     <TextBlock Text="Accent colour" Style="{DynamicResource FieldLabelStyle}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="AccentColourTextBox" Style="{DynamicResource StandardTextBoxStyle}"/><Button Grid.Column="1" Content="Choose..." Tag="{Binding ElementName=AccentColourTextBox}" Click="ChooseColourButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="8,0,0,0"/></Grid>
+    </StackPanel>
+    <TextBlock Text="Built-in background" Style="{DynamicResource FieldLabelStyle}"/>
+    <ComboBox x:Name="BuiltInBackgroundComboBox" SelectionChanged="BuiltInBackgroundComboBox_SelectionChanged"/>
+    <TextBlock Text="Images placed in Assets/Backgrounds are included with the application and appear here automatically." Style="{DynamicResource HintTextStyle}"/>
+    <TextBlock Text="Custom background image" Style="{DynamicResource FieldLabelStyle}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="BackgroundImageTextBox" Style="{DynamicResource StandardTextBoxStyle}"/><Button Grid.Column="1" Content="Browse..." Click="BrowseBackgroundButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="8,0,0,0"/></Grid>
+    <TextBlock Text="Panel opacity" Style="{DynamicResource FieldLabelStyle}"/><Slider x:Name="PanelOpacitySlider" Minimum="20" Maximum="100" TickFrequency="5"/>
+   </StackPanel></StackPanel>
+   <StackPanel x:Name="StartupSection" Visibility="Collapsed"><StackPanel>
+    <CheckBox x:Name="CheckSoftwareAtStartupCheckBox" Content="Check for available software updates when the application starts" Margin="0,4"/>
+    <CheckBox x:Name="CheckApplicationAtStartupCheckBox" Content="Check for Library Manager updates when the application starts" Margin="0,4"/>
+    <Separator Margin="0,14,0,12" Background="{DynamicResource BorderBrush}"/>
+    <TextBlock Text="BACKGROUND UPDATE NOTIFICATIONS" FontWeight="Bold" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,8"/>
+    <CheckBox x:Name="EnableBackgroundNotificationsCheckBox" Content="Check selected software on a schedule and show Windows notifications" Margin="0,4"/>
+    <TextBlock Text="Enabling this option verifies and creates the current-user scheduled task automatically." Style="{DynamicResource HintTextStyle}"/>
+    <WrapPanel Margin="0,8,0,0">
+     <TextBlock Text="Frequency" Style="{DynamicResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+     <ComboBox x:Name="BackgroundFrequencyComboBox" Width="100" SelectedIndex="0" SelectionChanged="BackgroundFrequencyComboBox_SelectionChanged">
+      <ComboBoxItem Content="Daily"/>
+      <ComboBoxItem Content="Weekly"/>
+     </ComboBox>
+     <StackPanel x:Name="WeeklyDayPanel" Orientation="Horizontal" Margin="12,0,0,0" Visibility="Collapsed">
+      <TextBlock Text="Day" Style="{DynamicResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+      <ComboBox x:Name="WeeklyDayComboBox" Width="120" SelectedIndex="0">
+       <ComboBoxItem Content="Monday"/>
+       <ComboBoxItem Content="Tuesday"/>
+       <ComboBoxItem Content="Wednesday"/>
+       <ComboBoxItem Content="Thursday"/>
+       <ComboBoxItem Content="Friday"/>
+       <ComboBoxItem Content="Saturday"/>
+       <ComboBoxItem Content="Sunday"/>
+      </ComboBox>
+     </StackPanel>
+     <TextBlock Text="Time" Style="{DynamicResource FieldLabelStyle}" VerticalAlignment="Center" Margin="12,0,8,0"/>
+     <TextBox x:Name="DailyCheckTimeTextBox" Style="{DynamicResource StandardTextBoxStyle}" Width="80" MaxLength="5" ToolTip="24-hour format, for example 09:00"/>
+    </WrapPanel>
+    <WrapPanel Margin="0,8,0,0">
+     <Button Content="Check now" Click="CheckBackgroundUpdatesNowButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/>
+     <Button Content="Test notification" Click="TestNotificationButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/>
+     <Button Content="Repair task" Click="RepairBackgroundTaskButton_Click" Style="{DynamicResource StandardButtonStyle}"/>
+    </WrapPanel>
+    <TextBlock x:Name="BackgroundTaskStatusTextBlock" Style="{DynamicResource HintTextStyle}" TextWrapping="Wrap"/>
+    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+     <CheckBox x:Name="EnableLoggingCheckBox" Content="Enable activity logs" VerticalAlignment="Center" Margin="0,0,20,0"/>
+     <TextBlock Text="Log retention (days)" Style="{DynamicResource FieldLabelStyle}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+     <TextBox x:Name="LogRetentionDaysTextBox" Style="{DynamicResource StandardTextBoxStyle}" Width="70" MaxLength="5" VerticalAlignment="Center"/>
+    </StackPanel>
+    <TextBlock Text="Set to 0 to keep all logs indefinitely. The default retention period is 30 days." Style="{DynamicResource HintTextStyle}" Margin="0,2,0,4"/>
+    <CheckBox x:Name="ShowRequestCounterCheckBox" Content="Show GitHub API request counter" Margin="0,4"/>
+    <TextBlock Text="Application data" Style="{DynamicResource FieldLabelStyle}" Margin="0,12,0,0"/>
+    <TextBlock Text="Open the local folder containing Library Manager settings, catalogue and application data." Style="{DynamicResource HintTextStyle}"/>
+    <Button Content="Open application data folder" Click="OpenApplicationDataFolderButton_Click" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Left" Margin="0,6,0,0"/>
+    <TextBlock Text="First Launch Guide" Style="{DynamicResource FieldLabelStyle}" Margin="0,12,0,0"/>
+    <TextBlock Text="Review the introductory workflow without changing your settings." Style="{DynamicResource HintTextStyle}"/>
+    <Button Content="Open First Launch Guide" Click="OpenFirstLaunchGuideButton_Click" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Left" Margin="0,6,0,0"/>
+   </StackPanel></StackPanel>
+   <StackPanel x:Name="AboutSection" Visibility="Collapsed"><StackPanel>
+    <TextBlock x:Name="VersionTextBlock" FontWeight="SemiBold"/>
+    <WrapPanel Margin="0,8,0,0"><Button Content="Check for application update" Click="CheckApplicationUpdateButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/><Button x:Name="InstallUpdateButton" Content="Download and restart" Click="InstallUpdateButton_Click" IsEnabled="False" Style="{DynamicResource PrimaryButtonStyle}"/></WrapPanel>
+    <TextBlock x:Name="UpdateStatusTextBlock" Style="{DynamicResource HintTextStyle}"/>
+    <WrapPanel><Button x:Name="OpenRepositoryButton" Content="Open GitHub repository" Tag="https://github.com/banner-52/LibraryManager" Click="OpenLinkButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/><Button x:Name="OpenReleasesButton" Content="Open releases and changelog" Tag="https://github.com/banner-52/LibraryManager/releases" Click="OpenLinkButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,8,0"/><Button Content="Report an incident" Click="ReportIncidentButton_Click" Style="{DynamicResource StandardButtonStyle}"/></WrapPanel>
+    <TextBlock Text="Creates a GitHub incident issue from Library Manager." Style="{DynamicResource HintTextStyle}" Margin="0,4,0,0"/>
+   </StackPanel></StackPanel>
+  </StackPanel></ScrollViewer></Border>
+  </Grid>
+  <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+   <Button Content="Save" Style="{DynamicResource PrimaryButtonStyle}" MinWidth="90" Margin="0,0,8,0" Click="SaveButton_Click"/>
+   <Button Content="Cancel" Style="{DynamicResource StandardButtonStyle}" MinWidth="90" Click="CancelButton_Click"/>
+  </StackPanel>
+ </Grid>
+</UserControl>

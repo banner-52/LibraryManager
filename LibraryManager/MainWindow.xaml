@@ -1,0 +1,52 @@
+<Window x:Class="LibraryManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Library Manager" Width="1600" Height="900" MinWidth="1200" MinHeight="700"
+        Icon="Assets/LibraryManagerIcon.png"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource PrimaryTextBrush}">
+    <Grid>
+        <Image x:Name="ApplicationBackgroundImage" Stretch="UniformToFill" Opacity="0"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="82"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="{DynamicResource HeaderBackgroundBrush}">
+                <Grid Margin="22,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="Assets/LibraryManagerIcon.png" Width="48" Height="48" Stretch="Uniform" Margin="0,0,12,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Library Manager" FontSize="27" FontWeight="SemiBold" Foreground="{DynamicResource HeaderTextBrush}"/>
+                                <TextBlock x:Name="ApplicationVersionTextBlock" Margin="10,0,0,3" VerticalAlignment="Bottom" Foreground="{DynamicResource HeaderSecondaryTextBrush}"/>
+                            </StackPanel>
+                            <TextBlock Text="Your software packages, kept up to date." Margin="0,4,0,0" Foreground="{DynamicResource HeaderSecondaryTextBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="NotificationButton" ToolTip="Notifications" Style="{DynamicResource HeaderButtonStyle}" MinWidth="42" Padding="8,0" FontSize="18" Margin="0,0,8,0" Click="NotificationButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔔"/>
+                                <TextBlock x:Name="NotificationCountTextBlock" Margin="5,0,0,0" FontWeight="SemiBold" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Content="Settings" Style="{DynamicResource HeaderButtonStyle}" Margin="0,0,8,0" Click="SettingsButton_Click"/>
+                        <Button Content="Help" Style="{DynamicResource HeaderButtonStyle}" Click="HelpButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1" Style="{DynamicResource StandardPanelStyle}" Margin="12,12,12,0" Padding="14,10">
+                <StackPanel>
+                    <TextBlock><Run Text="Folder Location: "/><Run x:Name="RepositoryPathRun" Text="Not configured"/></TextBlock>
+                    <TextBlock x:Name="RequestCountTextBlock" Margin="0,5,0,0" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <ContentControl x:Name="MainContent" Grid.Row="2"/>
+        </Grid>
+    </Grid>
+</Window>

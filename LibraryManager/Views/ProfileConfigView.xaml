@@ -1,0 +1,72 @@
+<UserControl x:Class="LibraryManager.Views.ProfileConfigView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Grid>
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <TextBlock x:Name="TitleTextBlock" Text="Profile Config" Style="{DynamicResource SurfaceTitleStyle}"/>
+  <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,0,12,0">
+   <Expander Header="Basic information" Style="{DynamicResource SectionExpanderStyle}" IsExpanded="True"><StackPanel>
+    <TextBlock Text="Software name" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="NameTextBox"/>
+    <TextBlock Text="Publisher (optional)" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="PublisherTextBox"/>
+    <TextBlock Text="Description (optional)" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="54"/>
+    <TextBlock Text="Source URL (optional for None and WinGet)" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="SourceUrlTextBox"/>
+    <TextBlock Text="Software icon URL or path (optional)" Style="{DynamicResource FieldLabelStyle}"/>
+    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="IconTextBox"/><Button Grid.Column="1" Content="Detect favicon" Click="DetectFaviconButton_Click" Margin="8,0,0,0"/></Grid>
+    <CheckBox x:Name="UpdateNotificationCheckBox" Content="Notify me while an update is available" Margin="0,10,0,0"/>
+    <TextBlock Text="The daily background check must also be enabled in Settings." Style="{DynamicResource HintTextStyle}"/>
+   </StackPanel></Expander>
+   <Expander Header="Update source" Style="{DynamicResource SectionExpanderStyle}" IsExpanded="True"><StackPanel>
+    <TextBlock Text="Method" Style="{DynamicResource FieldLabelStyle}"/>
+    <Grid>
+     <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+     <ComboBox x:Name="MethodComboBox" SelectionChanged="MethodComboBox_SelectionChanged"><ComboBoxItem Content="Website"/><ComboBoxItem Content="GitHub Releases"/><ComboBoxItem Content="WinGet"/><ComboBoxItem Content="None"/></ComboBox>
+     <Button Grid.Column="1" Content="Auto Detect" Click="AutoDetectButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="8,0,0,0"/>
+    </Grid>
+    <TextBlock Text="Choose a method manually, or use Auto Detect to find and configure the best available method." Style="{DynamicResource HintTextStyle}"/>
+    <StackPanel x:Name="WebsiteFieldsPanel">
+     <TextBlock Text="Version regex" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="VersionPatternTextBox"/>
+     <TextBlock Text="Download-link regex" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="DownloadPatternTextBox"/>
+     <TextBlock Text="Use named groups (?&lt;version&gt;...) and (?&lt;url&gt;...). Direct installer URLs and query parameters are supported." Style="{DynamicResource HintTextStyle}"/>
+     <WrapPanel Margin="0,6,0,0"><Button Content="Detect download links" Click="DetectWebsiteLinksButton_Click" Style="{DynamicResource PrimaryButtonStyle}" Margin="0,0,8,0"/><Button Content="Regex Generator" Click="RegexGeneratorButton_Click" Margin="0,0,8,0"/><Button Content="Direct link (no version detection)" Click="DirectLinkButton_Click"/></WrapPanel>
+    </StackPanel>
+    <StackPanel x:Name="GitHubFieldsPanel"><TextBlock Text="Release asset filename pattern (optional)" Style="{DynamicResource FieldLabelStyle}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="GitHubAssetPatternTextBox"/><Button Grid.Column="1" Content="Detect assets" Click="DetectGitHubAssetsButton_Click" Margin="8,0,0,0"/></Grid><TextBlock x:Name="GitHubPatternExampleTextBlock" Text="Example: ^Bambu_Studio_win_public-v.*\.exe$" Style="{DynamicResource HintTextStyle}"/><TextBlock Text="Enter a GitHub repository URL above. Leave the asset pattern blank to use the first release asset." Style="{DynamicResource HintTextStyle}"/></StackPanel>
+    <StackPanel x:Name="WingetFieldsPanel"><TextBlock Text="WinGet package ID" Style="{DynamicResource FieldLabelStyle}"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBox x:Name="PackageIdTextBox"/><Button Grid.Column="1" Content="Search WinGet" Click="SearchWinGetButton_Click" Margin="8,0,0,0"/></Grid></StackPanel>
+   <TextBlock x:Name="NoneSourceHint" Text="This profile is managed manually and will not be checked for updates." Style="{DynamicResource HintTextStyle}"/>
+   </StackPanel></Expander>
+   <Expander Header="Package options" Style="{DynamicResource SectionExpanderStyle}" IsExpanded="False"><StackPanel>
+    <TextBlock Text="Installer filename template (optional)" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="InstallerFileNameTextBox"/>
+    <TextBlock Text="Leave empty to keep the original installer filename. To rename it before packaging, use {name}, {version}, and {ext}. Example: {name}-{version}.{ext}" Style="{DynamicResource HintTextStyle}"/>
+   </StackPanel></Expander>
+   <Expander Header="Silent install / uninstall" Style="{DynamicResource SectionExpanderStyle}" IsExpanded="False"><StackPanel>
+    <TextBlock Text="Deployment documentation only. Library Manager never runs these commands." Style="{DynamicResource HintTextStyle}"/>
+    <Button x:Name="FindCommandsButton" Content="Find commands" Click="FindCommandsButton_Click" ToolTip="Search SilentInstallHQ and fill install and uninstall commands" HorizontalAlignment="Left" Margin="0,6,0,6"/>
+    <TextBlock x:Name="SilentCommandsStatusTextBlock" Style="{DynamicResource HintTextStyle}" TextWrapping="Wrap"/>
+    <TextBlock Text="Silent install command" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="InstallCommandTextBox"/>
+    <TextBlock Text="Silent uninstall command" Style="{DynamicResource FieldLabelStyle}"/><TextBox x:Name="UninstallCommandTextBox"/>
+   </StackPanel></Expander>
+   <Expander Header="Additional files" Style="{DynamicResource SectionExpanderStyle}" IsExpanded="False"><StackPanel>
+    <TextBlock Text="Companion files are downloaded and placed in the package during an update." Style="{DynamicResource HintTextStyle}"/>
+    <DataGrid x:Name="AdditionalFilesDataGrid" ItemsSource="{Binding AdditionalFiles}" Height="170" AutoGenerateColumns="False" CanUserAddRows="False">
+     <DataGrid.Columns>
+      <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
+      <DataGridTextColumn Header="Source URL" Binding="{Binding SourceUrl, UpdateSourceTrigger=PropertyChanged}" Width="2*"/>
+      <DataGridTextColumn Header="Regex (?&lt;url&gt;...)" Binding="{Binding FilePattern, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+      <DataGridTextColumn Header="ZIP folder" Binding="{Binding DestinationFolder, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+      <DataGridCheckBoxColumn Header="Required" Binding="{Binding Required, UpdateSourceTrigger=PropertyChanged}" Width="70"/>
+     </DataGrid.Columns>
+    </DataGrid>
+    <WrapPanel Margin="0,8,0,0">
+     <Button Content="Add source" Click="AddFileButton_Click" Margin="0,0,8,0"/>
+     <Button Content="Generate selected rule" Click="GenerateAdditionalButton_Click" Margin="0,0,8,0"/>
+     <Button Content="Remove selected" Click="RemoveFileButton_Click"/>
+    </WrapPanel>
+   </StackPanel></Expander>
+   <TextBlock x:Name="ValidationTextBlock" Foreground="{DynamicResource ErrorBrush}" TextWrapping="Wrap" Margin="0,4,0,8"/>
+   <WrapPanel><Button Content="Test Source" Click="TestButton_Click" Margin="0,0,8,0"/><Button x:Name="SubmitToOnlineCatalogueButton" Content="Submit to Online Catalogue" Click="SubmitButton_Click" Margin="0,0,8,0"/><Button x:Name="DeleteButton" Content="Delete profile" Click="DeleteButton_Click"/></WrapPanel>
+  </StackPanel></ScrollViewer>
+  <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+   <Button Content="Save" Style="{DynamicResource PrimaryButtonStyle}" MinWidth="90" Margin="0,0,8,0" Click="SaveButton_Click"/>
+   <Button Content="Cancel" MinWidth="90" Click="CancelButton_Click"/>
+  </StackPanel>
+ </Grid>
+</UserControl>

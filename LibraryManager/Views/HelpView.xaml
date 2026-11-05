@@ -1,0 +1,33 @@
+<UserControl x:Class="LibraryManager.Views.HelpView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <Grid Margin="12">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <TextBlock Text="Library Manager Help" Style="{DynamicResource PageTitleStyle}"/>
+  <Grid Grid.Row="1" Margin="0,8,0,0">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="220"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <StackPanel Grid.Column="0">
+    <Button Content="Basic settings" Tag="Basic" Click="HelpSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="Interface &amp; buttons" Tag="Interface" Click="HelpSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="Add software" Tag="Add" Click="HelpSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    <Button Content="Online services" Tag="OnlineServices" Click="HelpSectionButton_Click" Style="{DynamicResource StandardButtonStyle}" Margin="0,0,0,6"/>
+    
+   </StackPanel>
+  <Border Grid.Column="2" Style="{DynamicResource StandardPanelStyle}" Padding="18">
+    <ScrollViewer x:Name="HelpScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><StackPanel x:Name="HelpContentPanel" Margin="0,0,12,0"/></ScrollViewer>
+   </Border>
+  </Grid>
+  <Button Grid.Row="2" Content="Cancel" Click="CancelButton_Click" Style="{DynamicResource StandardButtonStyle}" MinWidth="90" HorizontalAlignment="Right" Margin="0,12,0,0"/>
+  <Grid x:Name="ScreenshotPreviewOverlay" Grid.RowSpan="3" Background="{DynamicResource WindowBackgroundBrush}" Visibility="Collapsed" Panel.ZIndex="10">
+   <Border Style="{DynamicResource StandardPanelStyle}" Margin="24" Padding="18">
+    <Grid>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <Grid>
+      <TextBlock x:Name="ScreenshotPreviewTitleTextBlock" Style="{DynamicResource FieldLabelStyle}" VerticalAlignment="Center"/>
+      <Button Content="Close preview" Click="CloseScreenshotPreview_Click" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Right"/>
+     </Grid>
+     <Image x:Name="ScreenshotPreviewImage" Grid.Row="1" Margin="0,12,0,0" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+    </Grid>
+   </Border>
+  </Grid>
+ </Grid>
+</UserControl>
